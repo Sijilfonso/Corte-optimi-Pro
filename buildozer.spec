@@ -7,7 +7,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,ttf,json
 version = 1.0.0
 
-# Requisitos basados en tu main.py (sin pandas/numpy para velocidad y estabilidad)
+# Requisitos (Kivy estándar para tu lógica de optimización)
 requirements = python3,kivy==2.2.1
 
 # Configuración de Android
@@ -15,17 +15,17 @@ orientation = portrait
 fullscreen = 0
 android.permissions = WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
 
-# API y NDK (Configuración estable)
+# API y NDK (Configuración específica para Kivy 2.2.1)
 android.api = 33
 android.minapi = 21
 android.ndk = 25b
 android.ndk_api = 21
 android.accept_sdk_license = True
 
-# Arquitecturas
-android.archs = arm64-v8a, armeabi-v7a
+# Arquitectura recomendada para mayor compatibilidad
+android.archs = arm64-v8a
 
-# Icono (Asegúrate de tener icon.png o comenta la línea)
+# Icono (Asegúrate de tener un icon.png en la raíz o pon un # al inicio de la línea)
 icon.filename = %(source.dir)s/icon.png
 
 [buildozer]
