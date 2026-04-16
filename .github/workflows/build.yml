@@ -21,16 +21,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev
-        pip install --upgrade buildozer cython
-
-    - name: Accept Android SDK licenses
-      run: |
-        mkdir -p ~/.android
-        echo "count=0" > ~/.android/repositories.cfg
-        mkdir -p $ANDROID_SDK_ROOT/licenses
-        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_SDK_ROOT/licenses/android-sdk-license
-        echo "84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_SDK_ROOT/licenses/android-sdk-preview-license
-        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        [span_0](start_span)pip install --upgrade buildozer cython[span_0](end_span)
 
     - name: Cache buildozer
       uses: actions/cache@v4
@@ -42,6 +33,9 @@ jobs:
 
     - name: Build APK
       run: |
+        # Este comando es vital: genera la estructura de carpetas necesaria
+        # y acepta las licencias de Android SDK Build-Tools 37 automáticamente
+        yes | buildozer android licenses
         buildozer -v android debug
 
     - name: Upload APK
