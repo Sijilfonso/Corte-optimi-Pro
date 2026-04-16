@@ -24,19 +24,29 @@ jobs:
       run: |
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update
-        # Añadimos libncurses6 y aseguramos dependencias de compilación para pandas/numpy
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config \
           zlib1g-dev libncurses6 libncursesw6 libtinfo6 cmake libffi-dev libssl-dev \
           libsqlite3-dev
         pip install --upgrade buildozer cython virtualenv
 
+    - name: Cache buildozer
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.buildozer
+          .buildozer
+        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+
     - name: Build APK
       run: |
-        # Forzamos a Buildozer a correr en un entorno controlado
-        # El comando 'yes' ahora se asegura de que Buildozer no se detenga
+        # Limpiamos rastros de NDKs del sistema para evitar conflictos
+        unset ANDROID_NDK_HOME
+        unset ANDROID_NDK_LATEST_HOME
+        unset ANDROID_NDK_ROOT
+        
+        # Aceptamos licencias y compilamos
         yes | buildozer -v android debug
       env:
-        # Esto soluciona problemas de codificación en los logs de Ubuntu 24
         PYTHONIOENCODING: utf-8
         LC_ALL: C.UTF-8
 
