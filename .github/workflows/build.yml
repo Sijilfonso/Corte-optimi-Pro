@@ -7,7 +7,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # EL CAMBIO MÁS IMPORTANTE: Usar Ubuntu 22.04 en lugar de latest
+    runs-on: ubuntu-22.04
+    
     steps:
     - uses: actions/checkout@v4
 
@@ -20,25 +22,29 @@ jobs:
       run: |
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update
+        
+        # Instalamos las dependencias estándar de Ubuntu 22.04 (incluyendo libtool-bin)
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip \
-          autoconf automake libtool pkg-config zlib1g-dev libncurses6 \
-          libncursesw6 libtinfo6 cmake libffi-dev libssl-dev \
-          libsqlite3-dev gettext m4
-        pip install --upgrade buildozer cython virtualenv
+          autoconf automake libtool libtool-bin pkg-config zlib1g-dev \
+          libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev \
+          libssl-dev libsqlite3-dev gettext m4
+        
+        # Instalamos Buildozer y forzamos Cython a una versión compatible con Kivy 2.2.1
+        pip install --upgrade buildozer virtualenv
+        pip install "Cython<3.0"
 
     - name: Build APK
       run: |
-        # Solo limpia si ya existe una instalación previa para evitar el FileNotFoundError
-        if [ -d ".buildozer/android/platform/python-for-android" ]; then
-            buildozer android clean
-        fi
-
-        # Limpiamos variables de NDK del sistema para evitar conflictos con la v25b
+        # LIMPIEZA NUCLEAR: Borramos cualquier rastro de caché corrupta de intentos anteriores
+        rm -rf .buildozer
+        rm -rf ~/.buildozer
+        
+        # Limpiamos variables de entorno que puedan interferir
         unset ANDROID_NDK_HOME
         unset ANDROID_NDK_LATEST_HOME
         unset ANDROID_NDK_ROOT
         
-        # Compilación: Aceptamos licencias y ejecutamos en modo debug detallado
+        # Compilamos
         yes | buildozer -v android debug
       env:
         PYTHONIOENCODING: utf-8
