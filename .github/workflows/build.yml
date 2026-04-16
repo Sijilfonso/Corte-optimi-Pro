@@ -20,7 +20,6 @@ jobs:
       run: |
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update
-        # Añadimos m4, que es el procesador de macros que lanza el error LT_SYS
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip \
           autoconf automake libtool pkg-config zlib1g-dev libncurses6 \
           libncursesw6 libtinfo6 cmake libffi-dev libssl-dev \
@@ -29,15 +28,17 @@ jobs:
 
     - name: Build APK
       run: |
-        # Forzamos la limpieza de la distribución anterior para que detecte libtool
-        buildozer android clean
-        
-        # Limpiamos variables de NDK del sistema
+        # Solo limpia si ya existe una instalación previa para evitar el FileNotFoundError
+        if [ -d ".buildozer/android/platform/python-for-android" ]; then
+            buildozer android clean
+        fi
+
+        # Limpiamos variables de NDK del sistema para evitar conflictos con la v25b
         unset ANDROID_NDK_HOME
         unset ANDROID_NDK_LATEST_HOME
         unset ANDROID_NDK_ROOT
         
-        # Compilación con log detallado
+        # Compilación: Aceptamos licencias y ejecutamos en modo debug detallado
         yes | buildozer -v android debug
       env:
         PYTHONIOENCODING: utf-8
