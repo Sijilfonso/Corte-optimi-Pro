@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Forzamos que todo use bash para evitar el error de 'start_span'
     defaults:
       run:
         shell: bash
@@ -23,7 +22,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        # Evita que 'needrestart' o diálogos de apt bloqueen el build
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev
@@ -39,9 +37,12 @@ jobs:
 
     - name: Build APK
       run: |
-        # Aceptamos licencias y compilamos en un solo bloque
-        yes | buildozer android licenses
-        buildozer -v android debug
+        # En lugar de un comando dedicado, pasamos 'yes' directamente al build.
+        # Esto aceptará las licencias en el momento exacto en que el SDK las pida.
+        yes | buildozer -v android debug
+      env:
+        # Esto ayuda a que algunas herramientas de Android no se bloqueen
+        TERM: xterm
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
