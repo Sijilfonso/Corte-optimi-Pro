@@ -1,59 +1,33 @@
 [app]
-
-# (str) Title of your application
+# Información básica
 title = CorteÓptimo Pro
-
-# (str) Package name
 package.name = corteoptimopro
-
-# (str) Package domain (needed for android packaging)
 package.domain = com.corteoptimo
-
-# (str) Source code where the main.py live
 source.dir = .
-
-# (list) Source files to include
 source.include_exts = py,png,jpg,kv,atlas,ttf,json
-
-# (str) Application version
 version = 1.0.0
 
-# (list) Application requirements
-# Solo lo necesario para tu main.py (KivyMD no parece usarse en los imports, solo Kivy estándar)
+# Requisitos basados en tu main.py (sin pandas/numpy para velocidad y estabilidad)
 requirements = python3,kivy==2.2.1
 
-# (str) Supported orientations
+# Configuración de Android
 orientation = portrait
-
-# (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
-
-# (list) Permissions
 android.permissions = WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
 
-# (int) Target Android API
+# API y NDK (Configuración estable)
 android.api = 33
-
-# (int) Minimum API your APK will support.
 android.minapi = 21
-
-# (str) Android NDK version to use
 android.ndk = 25b
-
-# (bool) Aceptar licencias automáticamente (CRUCIAL)
+android.ndk_api = 21
 android.accept_sdk_license = True
 
-# (str) The Android arch to build for
+# Arquitecturas
 android.archs = arm64-v8a, armeabi-v7a
 
-# (str) Icon of the application
-# Asegúrate de tener un icon.png en la raíz o comenta esta línea
+# Icono (Asegúrate de tener icon.png o comenta la línea)
 icon.filename = %(source.dir)s/icon.png
 
 [buildozer]
-
-# (int) Log level (2 para ver errores detallados)
 log_level = 2
-
-# (int) Display warning if buildozer is run as root
 warn_on_root = 1
